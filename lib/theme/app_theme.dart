@@ -10,15 +10,9 @@ class AppTheme {
   static const Color ethioYellow = Color(0xFFFEDD00);
   static const Color ethioRed = Color(0xFFEF3340);
 
-  static ThemeData get lightTheme {
-    return ThemeData(
-      useMaterial3: true,
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: primary,
-        background: background,
-      ),
-      scaffoldBackgroundColor: background,
-      textTheme: GoogleFonts.plusJakartaSansTextTheme().copyWith(
+  static TextTheme _buildTextTheme() {
+    try {
+      return GoogleFonts.plusJakartaSansTextTheme().copyWith(
         displayLarge: GoogleFonts.notoSansEthiopic(
           fontWeight: FontWeight.bold,
           color: secondary,
@@ -30,7 +24,26 @@ class AppTheme {
         bodyLarge: GoogleFonts.notoSansEthiopic(
           color: secondary,
         ),
+      );
+    } catch (e) {
+      // Fallback to default fonts if GoogleFonts fails
+      return const TextTheme(
+        displayLarge: TextStyle(fontWeight: FontWeight.bold, color: secondary),
+        headlineMedium: TextStyle(fontWeight: FontWeight.bold, color: secondary),
+        bodyLarge: TextStyle(color: secondary),
+      );
+    }
+  }
+
+  static ThemeData get lightTheme {
+    return ThemeData(
+      useMaterial3: true,
+      colorScheme: ColorScheme.fromSeed(
+        seedColor: primary,
+        surface: background,
       ),
+      scaffoldBackgroundColor: background,
+      textTheme: _buildTextTheme(),
       appBarTheme: const AppBarTheme(
         backgroundColor: background,
         elevation: 0,
@@ -41,7 +54,7 @@ class AppTheme {
         style: ElevatedButton.styleFrom(
           backgroundColor: primary,
           foregroundColor: secondary,
-          textStyle: GoogleFonts.notoSansEthiopic(
+          textStyle: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
